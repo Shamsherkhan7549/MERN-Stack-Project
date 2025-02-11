@@ -34,6 +34,25 @@ const Orders = ({ token }) => {
     console.log(orders);
   };
 
+  const handlingStatus = async(event, orderId) => {
+    try{
+      
+      const response = await axios.post(backendUrl+'/order/status', {orderId,status:event.target.value}, {headers:{token}} )
+
+      if(response.data.success){
+        getOrders();
+        toast.success("Status Changed")
+      }else{
+        toast.error(response.data.message)
+      }
+
+
+    }catch(error){
+      console.log(error.message)
+      toast.error(error.message)
+    }
+  }
+
   useEffect(() => {
     getOrders();
   }, [token]);
@@ -84,12 +103,12 @@ const Orders = ({ token }) => {
               <p>Date : {new Date(order.date).toLocaleDateString() }</p>
             </div>
             <p className="text-sm sm:text-[15ox]">{currency}{order.amount}</p>
-            <select value={order.status} className="p-2 font-semibold">
+            <select onChange={(event)=> handlingStatus(event, order._id)} value={order.status} className="p-2 font-semibold">
               <option value={"Order Placed"}>Order Placed</option>
-              <option value="Packing">Packing</option>
-              <option value="Shipped">Shipped</option>
-              <option value="Out For Delivery">Our For Delivery</option>
-              <option value="Delivered">Delivered</option>
+              <option value={"Packing"}>Packing</option>
+              <option value={"Shipped"}>Shipped</option>
+              <option value={"Out For Delivery"}>Our For Delivery</option>
+              <option value={"Delivered"}>Delivered</option>
             </select>
           </div>
           
