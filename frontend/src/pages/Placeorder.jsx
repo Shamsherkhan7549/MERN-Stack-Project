@@ -60,13 +60,22 @@ const Placeorder = () => {
           //API Calls for COD 
           case 'cod':   
           const response = await axios.post(backendUrl + '/order/place', orderData, {headers:{token}});
-          console.log(response)
           if(response.data.success){
                 setCartItems({});
                 navigate('/orders')
               }else{
                 toast.error(response.data.message)
               }
+            break;
+            case 'stripe':   
+            const responseStripe = await axios.post(backendUrl + '/order/stripe', orderData, {headers:{token}});
+            if(responseStripe.data.success){
+              const {session_url} = responseStripe.data;
+              window.location.replace(session_url)
+            }else{
+              toast.error(responseStripe.data.message)
+            }
+            
             break;
 
           default:
@@ -122,17 +131,17 @@ const Placeorder = () => {
               <Title text1={"PAYMENT"} text2={"METHOD"}/>
 
               <div className='flex justify-around w-full'>
-                <div className='flex items-center gap-10 border border-gray-200 px-3 py-2'>
+                <div onClick={()=>setMethod("stripe")} className='flex items-center gap-10 border border-gray-200 px-3 py-2'>
                   <p className='border border-gray-200  w-5 h-5 rounded-full active:bg-green-400 cursor-pointer'></p>
                   <img src={assets.googlePay_icon} className='w-8' />
                 </div>
 
-                <div className='flex items-center gap-6 border border-gray-200 px-3 py-2'>
+                <div onClick={()=>setMethod("razorpay")} className='flex items-center gap-6 border border-gray-200 px-3 py-2'>
                   <p className='border border-gray-200  w-5 h-5 rounded-full active:bg-green-400 cursor-pointer'></p>
                   <img src={assets.razorpay_logo} className='w-20' />
                 </div>
 
-                <div className='flex items-center gap-6 border border-gray-200 px-3 py-2'>
+                <div onClick={()=>setMethod("cod")} className='flex items-center gap-6 border border-gray-200 px-3 py-2'>
                   <p className='border border-gray-200  w-5 h-5 rounded-full active:bg-green-400 cursor-pointer'></p>
                   <p className='text-gray-500 text-4'>CASH ON DELIVERY</p>
                 </div>
