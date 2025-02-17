@@ -30,6 +30,24 @@ const Placeorder = () => {
     ))
    };
 
+   const initPay = (order) => {
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount:order.amount,
+      currency:order.currency,
+      name:'Order Payment',
+      description:'Order Payment',
+      order_id:order.id,
+      receipt:order.receipt,
+      handler:async(response)=>{
+        console.log(response)
+      }
+    }
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+   }
+
    const handlingSubmit = async(event) => {
      event.preventDefault();
      
@@ -77,6 +95,14 @@ const Placeorder = () => {
             }
             
             break;
+
+            case 'razorpay':
+                const responseRazorpay = await axios.post(backendUrl+'/order/razorpay',orderData, {headers:{token}});
+                if(responseRazorpay.data.success){
+                  initPay(responseRazorpay.data.order)
+                }
+
+              break;
 
           default:
             break;
