@@ -11,15 +11,13 @@ const ShopContextProvider = (props) => {
     const delivery_fee = 10;
     const [search, setSearch] = useState("");
     const [showSearch, setShowSearch] = useState(true);
-    const [cartItems, setCartItems] = useState({});
+    const [cartItems, setCartItems] = useState();
     const  navigate = useNavigate();
     const [products, setProducts] = useState([]);
     const [token, setToken] = useState("")
 
     const addToCart = async(itemId,size) => {
-      
         let cartData = structuredClone(cartItems);
-
         if(!size){
             toast.error('Select Product Size');
             return
@@ -40,13 +38,13 @@ const ShopContextProvider = (props) => {
         }
 
         setCartItems(cartData);
-
+        
         if(token){
             try{
+
                 await axios.post(backendUrl+'/cart/add', {itemId, size}, {headers:{token}});
 
             }catch(error){
-                console.log(error);
                 toast.error(error.message)
             }
         }
@@ -155,6 +153,7 @@ const ShopContextProvider = (props) => {
         getCart(localStorage.getItem('token'));
 
     }
+
 },[token])
 
     return(

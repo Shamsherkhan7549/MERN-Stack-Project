@@ -14,19 +14,17 @@ const Login = () => {
       try{
           if(currState === 'Sign Up'){
             const response = await axios.post(backendUrl+'/user/register',{name,email,password})
-
            if(response.data.success){
             setToken(response.data.token);
             localStorage.setToken('token', response.data.token);
             toast.success("Welcome to FOREVER clothing");
            }else{
-            toast.error(response.data.message);
+            toast.error("Please Enter at least 8 digits");
            }
 
           }else{
 
             const response = await axios.post(backendUrl+'/user/login',{email,password},{headers:{token}})
-            console.log(response.data)
             if(response.data.success){
               setToken(response.data.token);
              localStorage.setItem('token', response.data.token);

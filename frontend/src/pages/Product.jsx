@@ -15,7 +15,7 @@ const Product = () => {
   const fetchProductData = () => {
       const product = products.find(item => item._id === productId)
       if(product){
-        setProductData(product);    
+        setProductData(product);
         setImage(product.images[0])
       }
     }

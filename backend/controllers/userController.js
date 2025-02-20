@@ -36,9 +36,9 @@ const registerUser = async(req, res) => {
     try{
 
         const {name,email, password} = req.body;
-        console.log(name, email,password)
+        
         //checking user already exist or not
-        const exist = await USERMODEL.findOne({email})
+        const exist = await USERMODEL.findOne({email});
 
         if(exist){
             return  res.json({success:false, message:"User email exits"})

@@ -140,17 +140,17 @@ const placeOrderRazorpay = async(req, res) => {
         await newOrder.save();
 
         const options = {
-            amount: amount*100,
+            amount: amount,
             currency: currency.toUpperCase(),
             receipt: newOrder._id.toString(),
         }
 
-        await razorpayInstance.orders.create(options, (error, order) => {
-            if(error){
-                console.log(error)
-                return res.json({success:false, message:error.message})
+        razorpayInstance.orders.create(options, (error, order) => {
+            if (error) {
+                console.log(error);
+                return res.json({ success: false, message: error.message });
             }
-            res.json({success:true,order})
+            res.json({ success: true, order });
         })
 
     } catch (error) {
@@ -160,11 +160,20 @@ const placeOrderRazorpay = async(req, res) => {
 };
 
 //Verify Razorpay 
-const verifyRazorpay = (req, res) => {
+const verifyRazorpay = async(req, res) => {
     try{
-
+        const {userId,razorpay_order_id} = req.body;
+        const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id)
+        if(orderInfo.status === 'paid'){
+            await ORDERMODEL.findByIdAndUpdate(orderInfo.receipt, {payment:true});
+            await USERMODEL.findByIdAndUpdate(userId,{cartData:{}})
+            res.json({success:true, message:"Payment Successful"})
+        }else{
+            res.json({success:false, message:"Payment failed"})
+        }
     }catch(error){
-        
+        console.log(error);
+        res.json({success:false, message:"error.message"})
     }
 }
 
@@ -210,4 +219,4 @@ const updateStatus = async(req,res)=>{
     }
 };
 
-export {placeOrder,placeOrderStripe,verifyStripe, placeOrderRazorpay, allOrders, userOrders,updateStatus}
+export {placeOrder,placeOrderStripe,verifyStripe, placeOrderRazorpay,verifyRazorpay, allOrders, userOrders,updateStatus}

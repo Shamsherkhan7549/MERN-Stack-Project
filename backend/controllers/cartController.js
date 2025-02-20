@@ -2,11 +2,9 @@ import USERMODEL from '../models/userModel.js'
 
 const addCart = async(req,res) => {
    try{
-    const {itemId,size,userId} = req.body;      
-
+    const {itemId,size,userId} = req.body; 
     const userData = await USERMODEL.findById(userId)
     let cartData = await userData.cartData;
-   console.log(cartData)
     if(cartData[itemId]){
         if(cartData[itemId][size]){
             cartData[itemId][size] +=1;
