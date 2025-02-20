@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cors());
 
 app.get('/', (req, res)=> {
-    res.send("root page")
+    res.send("api working")
 })
 
 //api endpoint
